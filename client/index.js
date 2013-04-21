@@ -1,23 +1,38 @@
 (function() {
 	var socket = io.connect();
-	var context = document.getElementById('canvas').getContext('2d');
-	context.canvas.width = 600;
-	context.canvas.height = 600;
-	var name = prompt('enter your name');
+	var background = document.getElementById('background').getContext('2d');
+	var foreground = document.getElementById('foreground').getContext('2d');
+	background.canvas.width = 600;
+	background.canvas.height = 600;
+	foreground.canvas.width = 600;
+	foreground.canvas.height = 600;
+	foreground.fillStyle = 'rgb(255,0,0)';
+	var name = prompt('Enter your name');
 	if (name) {
 		socket.emit('playerName', name);
 	}
 
-	$('canvas').mousemove(function(e) {
+//Sends this users x + y position to server
+	$('#foreground').mousemove(function(e) {
 		socket.emit('updatePosition', {x: e.offsetX, y: e.offsetY});
 	});
 
+//Draw function renders each players position and adds their name
 	socket.on('newPos', function(data) {
-		context.clearRect(0,0,600,600);
+		foreground.clearRect(0, 0, 600, 600);
+
 		for (var player in data) {
-			context.fillRect(data[player].x, data[player].y, 15, 15);
-			context.fillText(data[player].name, data[player].x, data[player].y + 25);
+			foreground.fillRect(data[player].x, data[player].y, 15, 15);
+			foreground.fillText(data[player].name, data[player].x, data[player].y + 25);
 		}
+	});
+
+	socket.on('change', function(data) {
+		var bgImage = new Image();
+		bgImage.src = 'slides/' + data;
+		bgImage.onload = function() {
+			background.drawImage(bgImage, 0, 0);
+		};
 	});
 
 }())
