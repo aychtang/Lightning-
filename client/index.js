@@ -1,21 +1,15 @@
-(function(){
+(function() {
 	var socket = io.connect();
 	var context = document.getElementById('canvas').getContext('2d');
+	context.canvas.width = 600;
+	context.canvas.height = 600;
 	var name = prompt('enter your name');
-
 	if (name) {
 		socket.emit('playerName', name);
 	}
 
-	context.canvas.width = 600;
-	context.canvas.height = 600;
-
-	$('canvas').mousemove(function(e){
-		if(e.offsetX) {
-        mouseX = e.offsetX;
-        mouseY = e.offsetY;
-    }
-		socket.emit('updatePosition', {x: mouseX, y: mouseY});
+	$('canvas').mousemove(function(e) {
+		socket.emit('updatePosition', {x: e.offsetX, y: e.offsetY});
 	});
 
 	socket.on('newPos', function(data) {
@@ -25,4 +19,5 @@
 			context.fillText(data[player].name, data[player].x, data[player].y + 25);
 		}
 	});
+
 }())

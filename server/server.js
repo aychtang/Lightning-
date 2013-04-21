@@ -5,14 +5,6 @@ var io = require('socket.io').listen(server);
 
 app.use(express.static(__dirname + '/../client'));
 
-app.get('/main.css', function(req, res){
-  res.sendfile('../client/main.css');
-});
-
-app.get('/index.js', function(req, res){
-  res.sendfile('../client/index.js');
-});
-	
 server.listen(8080);
 
 var players = {};
