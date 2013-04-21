@@ -1,5 +1,8 @@
 (function(){
 	var socket = io.connect();
+	var context = document.getElementById('canvas').getContext('2d');
+	context.canvas.width = 1500;
+	context.canvas.height = 1500;
 
 	$('canvas').mousemove(function(e){
 		if(e.offsetX) {
@@ -10,10 +13,9 @@
 	});
 
 	socket.on('newPos', function(data) {
-		var context = document.getElementById('canvas').getContext('2d');
-		context.clearRect(0,0,500,500);
+		context.clearRect(0,0,1500,1500);
 		for (var player in data) {
-			context.fillRect(data[player].x, data[player].y, 5, 5);
+			context.fillRect(data[player].x, data[player].y, 15, 15);
 		}
-	})
+	});
 }())
