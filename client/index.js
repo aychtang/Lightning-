@@ -1,7 +1,7 @@
 (function(){
 	var socket = io.connect();
 	var context = document.getElementById('canvas').getContext('2d');
-	var name = prompt('enter your name bitch');
+	var name = prompt('enter your name');
 
 	if (name) {
 		socket.emit('playerName', name);
