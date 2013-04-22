@@ -20,19 +20,27 @@ var player = function(socket) {
 var slides = ['Blank-World-Vector-Map.jpg'];
 var currentSlide = '';
 
+//Selects random slide and sends to clients every 5s
 setInterval(function() {
   currentSlide = slides[~~(Math.random() * slides.length)];
   io.sockets.emit('change', currentSlide);
 }, 5000);
 
+setInterval(function() {
+  if (Object.keys(players).length > 0) {
+    io.sockets.emit('newPosition', players);
+  }
+}, 20);
+
 io.sockets.on('connection', function(socket) {
 	players[socket.id] = player(socket);
+  socket.emit('change', currentSlide);
 
 //Pushes game state upon mose move
   socket.on('updatePosition', function(data) {
+        console.log(data);
   	players[socket.id].x = data.x;
   	players[socket.id].y = data.y;
-  	io.sockets.emit('newPos', players);
   });
 
 //Adds name to storage when received from client

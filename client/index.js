@@ -2,10 +2,8 @@
 	var socket = io.connect();
 	var background = document.getElementById('background').getContext('2d');
 	var foreground = document.getElementById('foreground').getContext('2d');
-	background.canvas.width = 600;
-	background.canvas.height = 600;
-	foreground.canvas.width = 600;
-	foreground.canvas.height = 600;
+	foreground.canvas.width = background.canvas.width = 600;
+	foreground.canvas.height = background.canvas.height = 600;
 	foreground.fillStyle = 'rgb(255,0,0)';
 	var name = prompt('Enter your name');
 	if (name) {
@@ -18,7 +16,7 @@
 	});
 
 //Draw function renders each players position and adds their name
-	socket.on('newPos', function(data) {
+	socket.on('newPosition', function(data) {
 		foreground.clearRect(0, 0, 600, 600);
 
 		for (var player in data) {
@@ -28,7 +26,7 @@
 	});
 
 	socket.on('change', function(data) {
-		var bgImage = new Image();
+		var bgImage = bgImage || new Image();
 		bgImage.src = 'slides/' + data;
 		bgImage.onload = function() {
 			background.drawImage(bgImage, 0, 0);
