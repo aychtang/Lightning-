@@ -38,7 +38,6 @@ io.sockets.on('connection', function(socket) {
 
 //Pushes game state upon mose move
   socket.on('updatePosition', function(data) {
-        console.log(data);
   	players[socket.id].x = data.x;
   	players[socket.id].y = data.y;
   });
