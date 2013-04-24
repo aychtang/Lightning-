@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server, {log: false});
 server.listen(8080);
 
 app.use(express.static(__dirname + '/../client'));
@@ -10,14 +10,13 @@ var players = {};
 
 var player = function(socket) {
 	return {
-		id : socket.id,
     name: null,
 		x : null,
 		y : null
 	};
 };
 
-var slides = ['Blank-World-Vector-Map.jpg'];
+var slides = ['Blank-World-Vector-Map.jpg', '2.jpg'];
 var currentSlide = '';
 
 //Selects random slide and sends to clients every 5s
@@ -26,6 +25,8 @@ setInterval(function() {
   io.sockets.emit('change', currentSlide);
 }, 5000);
 
+//Pushes game state every 20 ms if anyone is connected
+//todo: only push state that has changed
 setInterval(function() {
   if (Object.keys(players).length > 0) {
     io.sockets.emit('newPosition', players);
@@ -33,18 +34,18 @@ setInterval(function() {
 }, 20);
 
 io.sockets.on('connection', function(socket) {
-	players[socket.id] = player(socket);
+	var self = players[socket.id] = player(socket);
   socket.emit('change', currentSlide);
 
-//Pushes game state upon mose move
+//Updates game state upon mouse move
   socket.on('updatePosition', function(data) {
-  	players[socket.id].x = data.x;
-  	players[socket.id].y = data.y;
+  	self.x = data.x;
+  	self.y = data.y;
   });
 
 //Adds name to storage when received from client
   socket.on('playerName', function(data) {
-    players[socket.id].name = data;
+    self.name = data;
   });
 
   socket.on('disconnect', function() {

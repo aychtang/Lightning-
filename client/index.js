@@ -20,13 +20,16 @@
 		foreground.clearRect(0, 0, 600, 600);
 
 		for (var player in data) {
-			foreground.fillRect(data[player].x, data[player].y, 15, 15);
-			foreground.fillText(data[player].name, data[player].x, data[player].y + 25);
+			var player = data[player];
+			if (player.x !== null) {
+				foreground.fillRect(player.x, player.y, 15, 15);
+				foreground.fillText(player.name, player.x, player.y + 25);
+			}
 		}
 	});
 
 	socket.on('change', function(data) {
-		var bgImage = bgImage || new Image();
+		var bgImage = new Image();
 		bgImage.src = 'slides/' + data;
 		bgImage.onload = function() {
 			background.drawImage(bgImage, 0, 0);
